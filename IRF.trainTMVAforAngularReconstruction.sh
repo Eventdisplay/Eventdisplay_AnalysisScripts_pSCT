@@ -40,6 +40,10 @@ optional parameters:
      [BDTTarget]            train for angular, energy or core reconstruction
                             (default: BDTDisp; BDTDispEnergy for energy' BDTDispCore for core)
 
+     [Small camera?]        Small camera simulations: yes = 1, no = 0
+                            (default: 0)
+
+
 Note: zenith angles, wobble offsets, and noise values are hard-coded into script
 
     
@@ -66,12 +70,22 @@ SIMTYPE=$6
 TELID=$7
 [[ "$8" ]] && PARTICLE_TYPE=$8 || PARTICLE_TYPE="gamma_diffuse"
 [[ "$9" ]] && BDTTARGET=$9 || BDTTARGET="BDTDisp"
+[[ "${10}" ]] && SMALLCAM=${10} || SMALLCAM="0"
 
 RECID="0"
 
+if [[ ${SMALLCAM} == "1" ]]; then
+    CAMERA="SmallCamera"
+    echo "Small camera? Yes."   
+else
+    CAMERA="FullCamera"
+    echo "Small camera? No."    
+fi
+
+
 # input directory containing evndisp products
 if [[ -n "$VERITAS_IRFPRODUCTION_DIR" ]]; then
-    INDIR="$VERITAS_IRFPRODUCTION_DIR/$EDVERSION/$SIMTYPE/${EPOCH}_ATM${ATM}_${PARTICLE_TYPE}/ze${ZA}deg_offset${WOBBLE}deg_NSB${NOISE}MHz"
+    INDIR="$VERITAS_IRFPRODUCTION_DIR/$EDVERSION/$SIMTYPE/${CAMERA}/${EPOCH}_ATM${ATM}_${PARTICLE_TYPE}/ze${ZA}deg_offset${WOBBLE}deg_NSB${NOISE}MHz"
 fi
 if [[ ! -d $INDIR ]]; then
     echo -e "Error, could not locate input directory. Locations searched:\n $INDIR"
@@ -81,7 +95,7 @@ echo "Input file directory: $INDIR"
 
 # Output file directory
 if [[ -n "$VERITAS_IRFPRODUCTION_DIR" ]]; then
-    ODIR="$VERITAS_IRFPRODUCTION_DIR/$EDVERSION/$SIMTYPE/${EPOCH}_ATM${ATM}_${PARTICLE_TYPE}/TMVA_AngularReconstruction/ze${ZA}deg_offset${WOBBLE}deg/"
+    ODIR="$VERITAS_IRFPRODUCTION_DIR/$EDVERSION/$SIMTYPE/${CAMERA}/${EPOCH}_ATM${ATM}_${PARTICLE_TYPE}/TMVA_AngularReconstruction/ze${ZA}deg_offset${WOBBLE}deg/"
 fi
 echo -e "Output files will be written to:\n $ODIR"
 mkdir -p "$ODIR"
