@@ -10,7 +10,7 @@ echo "
 IRF generation: create partial (for one point in the parameter space) lookup
                 tables from MC evndisp ROOT files
 
-IRF.generate_lookup_table_parts.sh <epoch> <atmosphere> <zenith> <offset angle> <NSB level> <Rec ID> <sim type> [Analysis Method]
+IRF.generate_lookup_table_parts.sh <epoch> <atmosphere> <zenith> <offset angle> <NSB level> <Rec ID> <sim type> [particle]
 
 required parameters:
         
@@ -19,7 +19,7 @@ required parameters:
                             V5: array after T1 move (Fall 2009 - Fall 2012)
                             V6: array after camera update (after Fall 2012)
                             
-    <atmosphere>            atmosphere model (21 = winter, 22 = summer)
+    <atmosphere>            atmosphere model (61 = winter, 62 = summer)
 
     <zenith>                zenith angle of simulations [deg]
 
@@ -34,9 +34,8 @@ required parameters:
 
 optional parameters:
 
-    [Analysis-Method]       select analysis method
-                            (TL, NN, see IRF.evndisp_MC.sh)
-
+    [particle]              gamma / gamma_diffuse / electron / proton
+                            (default: gamma)
     
 --------------------------------------------------------------------------------
 "
@@ -65,12 +64,22 @@ WOBBLE=$4
 NOISE=$5
 RECID=$6
 SIMTYPE=$7
-PARTICLE_TYPE="gamma"
-[[ "${8}" ]] && ANAMETHOD=${8} || ANAMETHOD="TL"
+[[ "${8}" ]] && PARTICLE_TYPE=${8} || PARTICLE_TYPE="gamma"
+[[ "${9}" ]] && SMALLCAM=${9} || SMALLCAM="0"
+ANAMETHOD="TL"
+
+if [[ ${SMALLCAM} == "1" ]]; then
+    CAMERA="SmallCamera"
+    echo "Small camera? Yes."   
+else
+    CAMERA="FullCamera"
+    echo "Small camera? No."    
+fi
+
 
 # input directory containing evndisp products
 if [[ -n "$VERITAS_IRFPRODUCTION_DIR" ]]; then
-    INDIR="$VERITAS_IRFPRODUCTION_DIR/$EDVERSION/$SIMTYPE/${EPOCH}_ATM${ATM}_${PARTICLE_TYPE}/ze${ZA}deg_offset${WOBBLE}deg_NSB${NOISE}MHz"
+    INDIR="$VERITAS_IRFPRODUCTION_DIR/$EDVERSION/$SIMTYPE/${CAMERA}/${EPOCH}_ATM${ATM}_${PARTICLE_TYPE}/ze${ZA}deg_offset${WOBBLE}deg_NSB${NOISE}MHz"
 fi
 if [[ ! -d $INDIR ]]; then
     echo "Error, could not locate input directory. Locations searched:"
@@ -81,7 +90,7 @@ echo "Input file directory: $INDIR"
 
 # Output file directory
 if [[ ! -z $VERITAS_IRFPRODUCTION_DIR ]]; then
-    ODIR="$VERITAS_IRFPRODUCTION_DIR/$EDVERSION/$SIMTYPE/${EPOCH}_ATM${ATM}_${PARTICLE_TYPE}/Tables"
+    ODIR="$VERITAS_IRFPRODUCTION_DIR/$EDVERSION/$SIMTYPE/${CAMERA}/${EPOCH}_ATM${ATM}_${PARTICLE_TYPE}/Tables"
 fi
 echo "Output file directory: $ODIR"
 mkdir -p "$ODIR"
@@ -93,7 +102,7 @@ LOGDIR="$VERITAS_USER_LOG_DIR/$DATE/MSCW.MAKETABLES"
 echo -e "Log files will be written to:\n $LOGDIR"
 mkdir -p "$LOGDIR"
 
-SUBSCRIPT="$EVNDISPSYS/scripts/VTS/helper_scripts/IRF.lookup_table_parallel_sub"
+SUBSCRIPT="$EVNDISPSYS/scripts/pSCT/helper_scripts/IRF.lookup_table_parallel_sub"
 
 # loop over all zenith angles, wobble offsets, and noise bins
 echo "Processing Zenith = $ZA, Wobble = $WOBBLE, Noise = $NOISE, Analysis method $ANAMETHOD"
