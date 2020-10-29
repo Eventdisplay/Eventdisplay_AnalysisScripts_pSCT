@@ -13,21 +13,18 @@ if [ $# -lt 7 ]; then
 echo "
 IRF generation: analyze simulation VBF files using evndisp 
 
-IRF.evndisp_MC.sh <sim directory> <particle> <epoch> <atmosphere> <zenith> <offset angle> <NSB level> <sim type> <runparameter file> [events] [Small camera?]
+IRF.evndisp_MC.sh <sim directory> <epoch> <atmosphere> <zenith> <offset angle> <NSB level> <sim type> <runparameter file>  [particle] [events] [Small camera?]
 
 required parameters:
 
     <sim directory>         directory containing simulation VBF files
-
-    <particle>              type of particle used in simulation:
-                            gamma (onSource) = 1, gamma (diffuse) = 12, electron = 2, proton = 3
 
     <epoch>                 array epoch (e.g., V4, V5, V6)
                             V4: array before T1 move (before Fall 2009)
                             V5: array after T1 move (Fall 2009 - Fall 2012)
                             V6: array after camera update (after Fall 2012)
     
-    <atmosphere>            atmosphere model (61 = winter, 62 = summer)
+    <atmosphere>            atmosphere model (21 = winter, 22 = summer)
 
     <zenith>                zenith angle of simulations [deg]
 
@@ -35,16 +32,17 @@ required parameters:
 
     <NSB level>             NSB level of simulations [MHz]
     
+    <sim type>              file simulation type (e.g. CARE, CARE_June1425)
 
+    <runparameter file>     file with integration window size and reconstruction cuts/methods, expected in $VERITAS_EVNDISP_AUX_DIR/ParameterFiles/
+
+                            Default: EVNDISP.reconstruction.runparameter.pSCT
 
 optional parameters:
     
-    [sim type]              file simulation type (expected sim type: CARE)
-
-    [runparameter file]     file with integration window size and reconstruction cuts/methods, expected in $VERITAS_EVNDISP_AUX_DIR/ParameterFiles/
-
-                            Default: EVNDISP.reconstruction.runparameter.pSCT
-    
+    [particle]              type of particle used in simulation:
+                            gamma (onSource) = 1, gamma (diffuse) = 12, electron = 2, proton = 3
+                            (default = 1  -->  gamma onSource)
 
     [events]                number of events per division
                             (default: -1)
@@ -69,14 +67,14 @@ EDVERSION=`$EVNDISPSYS/bin/evndisp --version | tr -d .`
 
 # Parse command line arguments
 SIMDIR=$1
-PARTICLE=$2
-EPOCH=$3
-ATM=$4
-ZA=$5
-WOBBLE=$6
-NOISE=$7
-[[ "$8" ]] && SIMTYPE=$8 || SIMTYPE="CARE"
-[[ "$9" ]] && ACUTS=$9 || ACUTS="EVNDISP.reconstruction.runparameter.pSCT"
+EPOCH=$2
+ATM=$3
+ZA=$4
+WOBBLE=$5
+NOISE=$6
+SIMTYPE=$7
+[[ "$8" ]] && ACUTS=$8 || ACUTS=EVNDISP.reconstruction.runparameter.pSCT
+[[ "$9" ]] && PARTICLE=$9 || PARTICLE=1
 [[ "${10}" ]] && NEVENTS=${10}  || NEVENTS=-1
 [[ "${11}" ]] && SMALLCAM=${11}  || SMALLCAM=0
 
@@ -112,15 +110,10 @@ echo -e "Output files will be written to:\n $OPDIR"
 echo "Using runparameter file $ACUTS"
 
 # Create a unique set of run numbers
-if [[ ${SIMTYPE:0:5} = "GRISU" ]]; then
-    [[ ${EPOCH:0:2} == "V4" ]] && RUNNUM="946500"
-    [[ ${EPOCH:0:2} == "V5" ]] && RUNNUM="956500"
-    [[ ${EPOCH:0:2} == "V6" ]] && RUNNUM="966500"
-elif [ ${SIMTYPE:0:4} = "CARE" ]; then
-    [[ ${EPOCH:0:2} == "V4" ]] && RUNNUM="941200"
-    [[ ${EPOCH:0:2} == "V5" ]] && RUNNUM="951200"
-    [[ ${EPOCH:0:2} == "V6" ]] && RUNNUM="961200"
-fi
+[[ ${EPOCH:0:2} == "V4" ]] && RUNNUM="941200"
+[[ ${EPOCH:0:2} == "V5" ]] && RUNNUM="951200"
+[[ ${EPOCH:0:2} == "V6" ]] && RUNNUM="961200"
+
 
 INT_WOBBLE=`echo "$WOBBLE*100" | bc | awk -F '.' '{print $1}'`
 if [[ ${#INT_WOBBLE} -lt 2 ]]; then
@@ -156,10 +149,6 @@ echo "NOISEFILE: ${NOISEFILE}"
 TMSF=$(echo "${FF%?}*1.5" | bc)
 if [[ ${NOISE} -eq 50 ]]; then
    TMSF=$(echo "${FF%?}*5.0" | bc)
-fi
-if [[ ${SIMTYPE:0:5} = "GRISU" ]]; then
-   # GRISU files are bzipped and need more space (factor of ~14)
-   TMSF=$(echo "${FF%?}*25.0" | bc)
 fi
 
 TMUNI=$(echo "${FF: -1}")
