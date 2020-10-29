@@ -10,7 +10,7 @@ echo "
 TMVA (BDT) training for angular resolution from MC ROOT files for different zenith angle bins
  (simulations that have been processed by evndisp_MC) 
 
-IRF.trainTMVAforAngularReconstruction.sh <epoch> <atmosphere> <zenith> <NSB level> <offset> <TelID> [particle] [BDTTarget]
+IRF.trainTMVAforAngularReconstruction.sh <epoch> <atmosphere> <zenith> <NSB level> <offset> <TelID> [particle] [BDTTarget] [Small camera?]
 
 required parameters:
 
