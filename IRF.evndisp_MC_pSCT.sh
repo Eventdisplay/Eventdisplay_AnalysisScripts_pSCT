@@ -41,7 +41,7 @@ required parameters:
 optional parameters:
     
     [particle]              type of particle used in simulation:
-                            gamma (onSource) = 1, gamma (diffuse) = 12, electron = 2, proton = 3
+							gamma = 1, gamma _diffuse= 12, electron = 2, proton = 14, alpha (helium) = 402
                             (default = 1  -->  gamma onSource)
 
     [events]                number of events per division
@@ -81,7 +81,7 @@ SIMTYPE=$7
 echo "NEVENTS = ${NEVENTS}" 
 
 # Particle names
-PARTICLE_NAMES=( [1]=gamma [2]=electron [3]=proton [12]=gamma_diffuse )
+PARTICLE_NAMES=( [1]=gamma [12]=gamma_diffuse [2]=electron [14]=proton [402]=alpha )
 PARTICLE_TYPE=${PARTICLE_NAMES[$PARTICLE]}
 
 # directory for run scripts

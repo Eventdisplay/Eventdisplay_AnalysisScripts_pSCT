@@ -36,8 +36,8 @@ required parameters:
 optional parameters:
     
     [particle]              type of particle used in simulation:
-                            gamma = 1, proton = 14, alpha (helium) = 402
-                            (default = 1  -->  gamma)
+                          	gamma = 1, gamma _diffuse= 12, electron = 2, proton = 14, alpha (helium) = 402
+                            (default = 1  -->  gamma onSource)
 
     [Small camera?]         Small camera simulations: yes = 1, no = 0
                             (default: 0)
