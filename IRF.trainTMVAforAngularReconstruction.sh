@@ -125,7 +125,7 @@ chmod u+x "$FSCRIPT.sh"
 echo "$FSCRIPT.sh"
 
 # run locally or on cluster
-SUBC=`$EVNDISPSYS/scripts/VTS/helper_scripts/UTILITY.readSubmissionCommand.sh`
+SUBC=`$EVNDISPSYS/scripts/pSCT/helper_scripts/UTILITY.readSubmissionCommand.sh`
 SUBC=`eval "echo \"$SUBC\""`
 if [[ $SUBC == *"ERROR"* ]]; then
     echo $SUBC
