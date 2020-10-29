@@ -12,7 +12,6 @@ NOISE=SIMNOISE
 EPOCH=ARRAYEPOCH
 ATM=ATMOSPHERE
 RECID=RECONSTRUCTIONID
-SIMTYPE=SIMULATIONTYPE
 INDIR=INPUTDIR
 ODIR=OUTPUTDIR
 
@@ -25,6 +24,6 @@ rm -f "$ODIR/$TABFILE.root"
 rm -f "$ODIR/$TABFILE.log"
 
 # make the table part
-"$EVNDISPSYS"/bin/mscw_energy -filltables=1 "$MAXDIST" -debug=2 -redo_stereo_reconstruction -minImages=1 -use_mc_parameters -write1DHistograms -inputfile "$INDIR/*[0-9]*.root" -tablefile "$ODIR/$TABFILE.root" -ze=$ZA -arrayrecid=$RECID -woff=$WOBBLE &> "$ODIR/$TABFILE.log"
+"$EVNDISPSYS"/bin/mscw_energy -filltables=1 "$MAXDIST" -redo_stereo_reconstruction -minImages=1 -use_mc_parameters -write1DHistograms -inputfile "$INDIR/*[0-9]*.root" -tablefile "$ODIR/$TABFILE.root" -ze=$ZA -arrayrecid=$RECID -woff=$WOBBLE &> "$ODIR/$TABFILE.log"
 
 exit

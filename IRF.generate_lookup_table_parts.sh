@@ -10,7 +10,7 @@ echo "
 IRF generation: create partial (for one point in the parameter space) lookup
                 tables from MC evndisp ROOT files
 
-IRF.generate_lookup_table_parts.sh <epoch> <atmosphere> <zenith> <offset angle> <NSB level> <Rec ID> <sim type> [particle]
+IRF.generate_lookup_table_parts.sh <epoch> <atmosphere> <zenith> <offset angle> <NSB level> <Rec ID> [particle]
 
 required parameters:
         
@@ -30,8 +30,6 @@ required parameters:
     <Rec ID>                reconstruction ID
                             (see EVNDISP.reconstruction.runparameter)
     
-    <sim type>              simulation type (e.g. GRISU-SW6, CARE_June1425)
-
 optional parameters:
 
     [particle]              gamma / gamma_diffuse / electron / proton
@@ -63,9 +61,9 @@ ZA=$3
 WOBBLE=$4
 NOISE=$5
 RECID=$6
-SIMTYPE=$7
-[[ "${8}" ]] && PARTICLE_TYPE=${8} || PARTICLE_TYPE="gamma"
-[[ "${9}" ]] && SMALLCAM=${9} || SMALLCAM="0"
+[[ "${7}" ]] && PARTICLE_TYPE=${7} || PARTICLE_TYPE="gamma"
+[[ "${8}" ]] && SMALLCAM=${8} || SMALLCAM="0"
+SIMTYPE="CARE"
 ANAMETHOD="TL"
 
 if [[ ${SMALLCAM} == "1" ]]; then
