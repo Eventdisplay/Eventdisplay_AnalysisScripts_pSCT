@@ -64,7 +64,6 @@ RECID=$6
 [[ "${7}" ]] && PARTICLE_TYPE=${7} || PARTICLE_TYPE="gamma"
 [[ "${8}" ]] && SMALLCAM=${8} || SMALLCAM="0"
 SIMTYPE="CARE"
-ANAMETHOD="TL"
 
 if [[ ${SMALLCAM} == "1" ]]; then
     CAMERA="SmallCamera"
@@ -103,7 +102,7 @@ mkdir -p "$LOGDIR"
 SUBSCRIPT="$EVNDISPSYS/scripts/pSCT/helper_scripts/IRF.lookup_table_parallel_sub"
 
 # loop over all zenith angles, wobble offsets, and noise bins
-echo "Processing Zenith = $ZA, Wobble = $WOBBLE, Noise = $NOISE, Analysis method $ANAMETHOD"
+echo "Processing Zenith = $ZA, Wobble = $WOBBLE, Noise = $NOISE"
 
 FSCRIPT="$LOGDIR/$EPOCH-MK-TBL.$DATE.MC-$ZA-$WOBBLE-$NOISE-$EPOCH-$ATM-$RECID-$(date +%s)"
 rm -f "$FSCRIPT.sh"

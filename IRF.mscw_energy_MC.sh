@@ -75,8 +75,6 @@ RECID=$7
 RUNNUMBER=$8
 [[ "${9}" ]] && PARTICLE=${9} || PARTICLE=1
 [[ "${10}" ]] && SMALLCAM=${10} || SMALLCAM="0"
-[[ "${11}" ]] && ANAMETHOD=${11} || ANAMETHOD="TL"
-
 SIMTYPE="CARE"
 
 if [[ ${SMALLCAM} == "1" ]]; then
@@ -150,7 +148,6 @@ sed -e "s|INPUTDIR|$INDIR|" \
     -e "s|NFILES|$NROOTFILES|" \
     -e "s|RUNNMB|$RUNNUMBER|" \
     -e "s|TMVAPRODUCTS|$TMVADIR|" \
-    -e "s|ANALYSISMETHOD|$ANAMETHOD|" \
     -e "s|RECONSTRUCTIONID|$RECID|" "$SUBSCRIPT.sh" > "$FSCRIPT.sh"
 
 chmod u+x "$FSCRIPT.sh"

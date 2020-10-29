@@ -187,7 +187,7 @@ chmod u+x $FSCRIPT.sh
 echo $FSCRIPT.sh
 
 # run locally or on cluster
-SUBC=`$EVNDISPSYS/scripts/VTS/helper_scripts/UTILITY.readSubmissionCommand.sh`
+SUBC=`$EVNDISPSYS/scripts/pSCT/helper_scripts/UTILITY.readSubmissionCommand.sh`
 SUBC=`eval "echo \"$SUBC\""`
 if [[ $SUBC == *qsub* ]]; then
     if [[ $NEVENTS -gt 0 ]]; then
