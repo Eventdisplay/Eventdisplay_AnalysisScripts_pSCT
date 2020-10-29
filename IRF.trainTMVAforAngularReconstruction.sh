@@ -10,7 +10,7 @@ echo "
 TMVA (BDT) training for angular resolution from MC ROOT files for different zenith angle bins
  (simulations that have been processed by evndisp_MC) 
 
-IRF.trainTMVAforAngularReconstruction.sh <epoch> <atmosphere> <zenith> <NSB level> <offset> <sim type> <TelID> [particle] [BDTTarget]
+IRF.trainTMVAforAngularReconstruction.sh <epoch> <atmosphere> <zenith> <NSB level> <offset> <TelID> [particle] [BDTTarget]
 
 required parameters:
 
@@ -27,15 +27,13 @@ required parameters:
 
     <offset>                offset angle of simulations [deg]  
 
-    <sim type>              simulation type (e.g. GRISU, CARE)
-
     <Telescope ID>          for VERITAS it is the telescope number (1,2,3 or 4)
 
 
 optional parameters:
 
      [particle]             gamma / gamma_diffuse / electron / proton
-			    (default: gamma_diffuse <-- recommended)
+			    			(default: gamma_diffuse <-- recommended)
 
      [BDTTarget]            train for angular, energy or core reconstruction
                             (default: BDTDisp; BDTDispEnergy for energy' BDTDispCore for core)
@@ -66,12 +64,12 @@ ATM=$2
 ZA=$3
 NOISE=$4
 WOBBLE=$5
-SIMTYPE=$6
-TELID=$7
-[[ "$8" ]] && PARTICLE_TYPE=$8 || PARTICLE_TYPE="gamma_diffuse"
-[[ "$9" ]] && BDTTARGET=$9 || BDTTARGET="BDTDisp"
-[[ "${10}" ]] && SMALLCAM=${10} || SMALLCAM="0"
+TELID=$6
+[[ "$7" ]] && PARTICLE_TYPE=$7 || PARTICLE_TYPE="gamma_diffuse"
+[[ "$8" ]] && BDTTARGET=$8 || BDTTARGET="BDTDisp"
+[[ "${9}" ]] && SMALLCAM=${9} || SMALLCAM="0"
 
+SIMTYPE="CARE"
 RECID="0"
 
 if [[ ${SMALLCAM} == "1" ]]; then
