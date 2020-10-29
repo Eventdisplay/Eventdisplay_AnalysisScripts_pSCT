@@ -9,7 +9,7 @@ if [ $# -lt 9 ]; then
 echo "
 IRF generation: analyze simulation evndisp ROOT files using mscw_energy 
 
-IRF.mscw_energy_MC.sh <table file> <epoch> <atmosphere> <zenith> <offset angle> <NSB level> <Rec ID> <sim type> [particle] [Analysis Method]
+IRF.mscw_energy_MC.sh <table file> <epoch> <atmosphere> <zenith> <offset angle> <NSB level> <Rec ID> [particle] [Small camera?]
 
 required parameters:
 
@@ -30,8 +30,6 @@ required parameters:
     
     <Rec ID>                reconstruction ID
                             (see EVNDISP.reconstruction.runparameter)
-
-    <sim type>              simulation type (e.g. GRISU-SW6, CARE_June1425)
 
     <runnumber>             e.g 961200
 
@@ -74,11 +72,12 @@ ZA=$4
 WOBBLE=$5
 NOISE=$6
 RECID=$7
-SIMTYPE=$8
-RUNNUMBER=$9
-[[ "${10}" ]] && PARTICLE=${10} || PARTICLE=1
-[[ "${11}" ]] && SMALLCAM=${11} || SMALLCAM="0"
-[[ "${12}" ]] && ANAMETHOD=${12} || ANAMETHOD="TL"
+RUNNUMBER=$8
+[[ "${9}" ]] && PARTICLE=${9} || PARTICLE=1
+[[ "${10}" ]] && SMALLCAM=${10} || SMALLCAM="0"
+[[ "${11}" ]] && ANAMETHOD=${11} || ANAMETHOD="TL"
+
+SIMTYPE="CARE"
 
 if [[ ${SMALLCAM} == "1" ]]; then
     CAMERA="SmallCamera"
@@ -158,7 +157,7 @@ chmod u+x "$FSCRIPT.sh"
 echo "Run script written to: $FSCRIPT"
 
 # run locally or on cluster
-SUBC=`$EVNDISPSYS/scripts/VTS/helper_scripts/UTILITY.readSubmissionCommand.sh`
+SUBC=`$EVNDISPSYS/scripts/pSCT/helper_scripts/UTILITY.readSubmissionCommand.sh`
 SUBC=`eval "echo \"$SUBC\""`
 if [[ $SUBC == *"ERROR"* ]]; then
     echo "$SUBC"
