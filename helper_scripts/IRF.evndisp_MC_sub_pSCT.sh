@@ -63,9 +63,8 @@ mkdir -p $DDIR
 echo "Temporary directory: $DDIR"
 
 # loop over simulation files
-if [[ ${SIMTYPE:0:5} == "GRISU" ]]; then
-    VBF_FILE=$VBFNAME"wobb.vbf"
-elif [[ ${SIMTYPE:0:4} == "CARE" ]]; then
+
+if [[ ${SIMTYPE:0:4} == "CARE" ]]; then
     VBF_FILE="$VBFNAME.vbf"
 fi
 echo 
@@ -121,7 +120,7 @@ fi
 
 ###############################################
 # calculate pedestals
-# (CARE only, GRISU used external noise file)
+# (CARE only)
 ###############################################
 if [[ ${SIMTYPE:0:4} == "CARE" ]]; then
     echo "Calculating pedestals for run $RUNNUM"
@@ -148,12 +147,8 @@ TZEROPT="-runmode=7 -calibrationsumfirst=0 -calibrationsumwindow=16 -calibration
 
 rm -f $ODIR/$RUNNUM.tzero.log
 
-### eventdisplay GRISU run options
-if [[ ${SIMTYPE:0:5} = "GRISU" ]]; then
-    TZEROPT="$TZEROPT -pedestalfile $NOISEFILE -pedestalseed=$RUNNUM -pedestalDefaultPedestal=$PEDLEV -lowgaincalibrationfile NOFILE -lowgainpedestallevel=$PEDLEV"
-else
-   TZEROPT="$TZEROPT -lowgainpedestallevel=$LOWPEDLEV"
-fi
+TZEROPT="$TZEROPT -lowgainpedestallevel=$LOWPEDLEV"
+
 
 echo "$EVNDISPSYS/bin/evndisp $MCOPT $TZEROPT" &> $ODIR/$RUNNUM.tzero.log
 $EVNDISPSYS/bin/evndisp $MCOPT $TZEROPT &>> $ODIR/$RUNNUM.tzero.log
@@ -171,12 +166,9 @@ fi
 ###############################################
 # run options
 EVNOPT=" -writenomctree -outputfile $DDIR/$ONAME.root "
-# special options for GRISU
-if [[ ${SIMTYPE:0:5} == "GRISU" ]]; then
-    EVNOPT="$MCOPT -simu_hilo_from_simfile -pedestalfile $NOISEFILE -pedestalseed=$RUNNUM -pedestalDefaultPedestal=$PEDLEV -lowgaincalibrationfile NOFILE -lowgainpedestallevel=$PEDLEV"
-else
-    EVNOPT="$EVNOPT -lowgainpedestallevel=$LOWPEDLEV"
-fi
+
+EVNOPT="$EVNOPT -lowgainpedestallevel=$LOWPEDLEV"
+
 
 # throughput correction after trace integration
 # do not combine with corretion of FADC values (!)
@@ -191,7 +183,7 @@ $EVNDISPSYS/bin/evndisp $MCOPT $EVNOPT &>> $ODIR/$ONAME.log
 
 # remove temporary files
 ls -lh "$DDIR"
-cp -f -v i "$DDIR/$ONAME.root" "$ODIR/$ONAME.root"
+cp -f -v "$DDIR/$ONAME.root" "$ODIR/$ONAME.root"
 chmod g+w "$ODIR/$ONAME.root"
 chmod g+w "$ODIR/$ONAME.log"
 chmod g+w "$ODIR/$ONAME.tzero.log"

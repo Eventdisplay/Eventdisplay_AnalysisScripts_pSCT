@@ -10,7 +10,7 @@ echo "
 IRF generation: create partial (for one point in the parameter space) lookup
                 tables from MC evndisp ROOT files
 
-IRF.generate_lookup_table_parts.sh <epoch> <atmosphere> <zenith> <offset angle> <NSB level> <Rec ID> <sim type> [particle]
+IRF.generate_lookup_table_parts.sh <epoch> <atmosphere> <zenith> <offset angle> <NSB level> <Rec ID> [particle]
 
 required parameters:
         
@@ -30,8 +30,6 @@ required parameters:
     <Rec ID>                reconstruction ID
                             (see EVNDISP.reconstruction.runparameter)
     
-    <sim type>              simulation type (e.g. GRISU-SW6, CARE_June1425)
-
 optional parameters:
 
     [particle]              gamma / gamma_diffuse / electron / proton
@@ -63,10 +61,9 @@ ZA=$3
 WOBBLE=$4
 NOISE=$5
 RECID=$6
-SIMTYPE=$7
-[[ "${8}" ]] && PARTICLE_TYPE=${8} || PARTICLE_TYPE="gamma"
-[[ "${9}" ]] && SMALLCAM=${9} || SMALLCAM="0"
-ANAMETHOD="TL"
+[[ "${7}" ]] && PARTICLE_TYPE=${7} || PARTICLE_TYPE="gamma"
+[[ "${8}" ]] && SMALLCAM=${8} || SMALLCAM="0"
+SIMTYPE="CARE"
 
 if [[ ${SMALLCAM} == "1" ]]; then
     CAMERA="SmallCamera"
@@ -105,7 +102,7 @@ mkdir -p "$LOGDIR"
 SUBSCRIPT="$EVNDISPSYS/scripts/pSCT/helper_scripts/IRF.lookup_table_parallel_sub"
 
 # loop over all zenith angles, wobble offsets, and noise bins
-echo "Processing Zenith = $ZA, Wobble = $WOBBLE, Noise = $NOISE, Analysis method $ANAMETHOD"
+echo "Processing Zenith = $ZA, Wobble = $WOBBLE, Noise = $NOISE"
 
 FSCRIPT="$LOGDIR/$EPOCH-MK-TBL.$DATE.MC-$ZA-$WOBBLE-$NOISE-$EPOCH-$ATM-$RECID-$(date +%s)"
 rm -f "$FSCRIPT.sh"
@@ -124,7 +121,7 @@ chmod u+x "$FSCRIPT.sh"
 echo "$FSCRIPT.sh"
 
 # run locally or on cluster
-SUBC=`"$EVNDISPSYS"/scripts/VTS/helper_scripts/UTILITY.readSubmissionCommand.sh`
+SUBC=`"$EVNDISPSYS"/scripts/pSCT/helper_scripts/UTILITY.readSubmissionCommand.sh`
 SUBC=`eval "echo \"$SUBC\""`
 if [[ $SUBC == *"ERROR"* ]]; then
 echo "$SUBC"
